@@ -6,39 +6,48 @@ export default function SignUp() {
 		<Box 
 			bgcolor='#C6FAD2'
 			padding={5}
+			sx={{ minWidth: '100vw' }}
 		>
 			<Grid 
 				container
 				direction='column'
 				justifyContent='center'
-				alignItems='center'
 				spacing={2}
 			>
 				<Grid item>
-					<Typography variant="h4">
-						Hurry, put this on.
+					<Typography variant="h4" gutterBottom>
+						Hurry, put this on,
 					</Typography>
+
+					<img src={tinfoilHat} alt="Tinfoil Hat" width={300} />
 				</Grid>
 
 				<Grid item>
-					<img src={tinfoilHat} alt="Tinfoil Hat" width={300} />
-					<Typography variant="h6"> 5G Deflectron 9000 </Typography>
-				</Grid>				
+					<Typography variant="h4" gutterBottom>
+						And Join Us.
+					</Typography>
 
-				<Grid item>
-					<Box minWidth={500}>
+					<Box sx={{maxWidth: '33vw'}}>
 						<TextField
-							label="Give Us Your Real Name"
+							label="Choose a username"
 							variant="filled"
-							helperText="of course we aren't lizards"
+							helperText="not your real name; the lizard people are listening."
 							fullWidth
 						/>
-					</Box>
-				</Grid>
 
-				<Button variant="contained">
-					Start Planning
-				</Button>
+						<TextField
+							label="Choose a really secure password"
+							variant="filled"
+							helperText="don't let them get to you; I mean, your account."
+							fullWidth
+						/>
+
+						<Button variant="contained">
+							Start Planning
+						</Button>
+					</Box>
+
+				</Grid>
 			</Grid>
 		</Box>
 	)

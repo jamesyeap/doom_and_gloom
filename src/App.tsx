@@ -4,10 +4,11 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core'
 
 import SignUpPage from './pages/SignUpPage';
+import LoginPage from './pages/LoginPage';
 
 /* color scheme */
 // #C6FAD2 - light green
-// #DD9BCF - purple
+// #8882F4 - purple
 // #F6FFEE - really light green
 // #F48882 - red
 // #FAD2CC - pink
@@ -36,11 +37,11 @@ const theme = createMuiTheme({
     },
     h5: {
       fontFamily: 'Roboto, sans-serif',
-      color: '#DD9BCF'
+      color: '#F48882 '
     },
     h6: {
       fontFamily: 'Roboto, sans-serif',
-      color: '#1b4'
+      color: '#F48882 '
     },
     subtitle1: {
       fontFamily: 'Roboto, sans-serif',
@@ -57,7 +58,8 @@ const theme = createMuiTheme({
 function App() {  
   return (
     <ThemeProvider theme={theme}>
-      <SignUpPage />
+      {/* <SignUpPage /> */}
+      <LoginPage />
     </ThemeProvider>
   );
 }
