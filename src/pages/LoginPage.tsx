@@ -3,9 +3,10 @@ import Alert from '@material-ui/lab/Alert';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Header from '../components/Header';
+import { User, Credentials } from '../typings';
 
 const login_API = (username:string, password:string) => {
 	return axios.post(
@@ -17,16 +18,6 @@ const login_API = (username:string, password:string) => {
 	).then(res => res.data);
 }
 
-export type User = {
-	id: number,
-	username: string
-}
-
-export type Credentials = {
-	username: string,
-	password: string
-}
-
 export default function LoginPage() {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
@@ -34,14 +25,20 @@ export default function LoginPage() {
 	const [showSuccessfulLogin, setShowSuccessfulLogin] = useState<boolean>(false);
 	const [loginError, setLoginError] = useState<Error | undefined>(undefined);
 
+	let navigate = useNavigate();
+
 	const loginQuery = useQuery<User, Error>(
 		'user', 
 		() => login_API(username, password),
 		{
 			enabled: startLogin, // only active when user clicks on "Log in"
 			onSettled: () => { setStartLogin(false); },
-			onSuccess: () => { setShowSuccessfulLogin(true); },
-			onError: (error) => { setLoginError(error); }
+			onSuccess: () => { 
+				setShowSuccessfulLogin(true);				
+				navigate("/home");
+			},
+			onError: (error) => { setLoginError(error); },
+			cacheTime: Infinity // keep user information around until user logs out
 		}
 	);
 	

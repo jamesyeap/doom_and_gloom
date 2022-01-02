@@ -3,9 +3,9 @@ import Alert from '@material-ui/lab/Alert';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { User, Credentials } from './LoginPage';
+import { User, Credentials } from '../typings';
 import tinfoilHat from '../tinfoil_hat.png';
 import Header from '../components/Header';
 
@@ -19,7 +19,6 @@ const signup_API = (username:string, password:string) => {
 	).then(res => res.data);
 }
 
-
 export default function SignUpPage() {
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
@@ -27,12 +26,17 @@ export default function SignUpPage() {
 	const [showSuccessfulSignup, setShowSuccessfulSignup] = useState<boolean>(false);
 	const [signupError, setSignupError] = useState<Error | undefined>(undefined);
 
+	let navigate = useNavigate();
+
 	const signupQuery = useQuery<User, Error>(
 		'user', 
 		() => signup_API(username, password),
 		{
 			enabled: startSignup, // only active when user clicks on "Log in"
-			onSettled: () => { setStartSignup(false); },
+			onSettled: () => { 
+				setStartSignup(false); 
+				navigate("/home");
+			},
 			onSuccess: () => { setShowSuccessfulSignup(true); },
 			onError: (error) => { setSignupError(error); }
 		}
@@ -93,6 +97,7 @@ export default function SignUpPage() {
 									<TextField
 										label="Choose a really secure password"
 										variant="filled"
+										type="password"
 										helperText="don't let them get to you; I mean, your account."
 										fullWidth
 										value={password}

@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
+import HomePage from './pages/HomePage';
+import { RequireAuth } from './pages/Auth';
 
 /* color scheme */
 // #C6FAD2 - light green
@@ -57,6 +59,7 @@ const theme = createMuiTheme({
 
 const queryClient = new QueryClient()
 
+
 function App() {  
   return (
     <ThemeProvider theme={theme}>
@@ -65,6 +68,16 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+
+          <Route
+            path="/home"
+            element={
+              <RequireAuth>
+                <HomePage />
+              </RequireAuth>
+            }
+          />
+
         </Routes>
       </BrowserRouter>
         <ReactQueryDevtools />
