@@ -3,6 +3,7 @@ import Alert from '@material-ui/lab/Alert';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 import Header from '../components/Header';
 
@@ -131,7 +132,7 @@ export default function LoginPage() {
 									</Grid>
 
 									<Grid item>
-										<Button variant="outlined" color="secondary">
+										<Button variant="outlined" color="secondary" component={Link} to="/signup">
 											Oh, you're new here?
 										</Button>
 									</Grid>

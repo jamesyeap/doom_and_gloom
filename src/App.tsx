@@ -1,6 +1,7 @@
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -60,8 +61,12 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        <SignUpPage />
-        {/* <LoginPage /> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+        </Routes>
+      </BrowserRouter>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </ThemeProvider>
