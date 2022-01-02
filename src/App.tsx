@@ -1,5 +1,6 @@
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { QueryClient, QueryClientProvider, ReactQueryDevtools } from 'react-query/devtools'
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -59,8 +60,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-        {/* <SignUpPage /> */}
-        <LoginPage />
+        <SignUpPage />
+        {/* <LoginPage /> */}
         <ReactQueryDevtools />
       </QueryClientProvider>
     </ThemeProvider>

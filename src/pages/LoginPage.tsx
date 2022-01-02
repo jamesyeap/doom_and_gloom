@@ -1,16 +1,52 @@
 import { Grid, Box, Typography, TextField, Button, Snackbar } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 import Header from '../components/Header';
 
+const login_API = (username:string, password:string) => {
+	return axios.post(
+		"https://tomato-backend-api.herokuapp.com/login",
+		{ 
+			username: username,
+			password: password
+		}
+	).then(res => res.data);
+}
 
+export type User = {
+	id: number,
+	username: string
+}
+
+export type Credentials = {
+	username: string,
+	password: string
+}
 
 export default function LoginPage() {
-	const [showLoggingIn, setShowLoggingIn] = useState<boolean>(false);
-
 	const [username, setUsername] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
+	const [startLogin, setStartLogin] = useState<boolean>(false);
+	const [showSuccessfulLogin, setShowSuccessfulLogin] = useState<boolean>(false);
+	const [loginError, setLoginError] = useState<Error | undefined>(undefined);
+
+	const loginQuery = useQuery<User, Error>(
+		'user', 
+		() => login_API(username, password),
+		{
+			enabled: startLogin, // only active when user clicks on "Log in"
+			onSettled: () => { setStartLogin(false); },
+			onSuccess: () => { setShowSuccessfulLogin(true); },
+			onError: (error) => { setLoginError(error); }
+		}
+	);
+	
+	const handleLogIn = () => {
+		setStartLogin(true);
+	}
 
 	return (
 		<Box bgcolor='#C6FAD2'>
@@ -89,7 +125,7 @@ export default function LoginPage() {
 
 								<Grid container spacing={1}>
 									<Grid item>
-										<Button variant="contained" color="primary" onClick={() => setShowLoggingIn(true)}>
+										<Button variant="contained" color="primary" onClick={handleLogIn}>
 											Log In
 										</Button>
 									</Grid>
@@ -103,12 +139,23 @@ export default function LoginPage() {
 							</Box>
 						</Grid>
 
-						<Snackbar open={showLoggingIn} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}>
+						<Snackbar open={loginQuery.isFetching} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}>
 							<Box sx={{ minWidth: '25vw' }}>
 								<Alert severity="info" >Logging you in</Alert>
 							</Box>
 						</Snackbar>
-						
+
+						<Snackbar open={showSuccessfulLogin} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }} autoHideDuration={1000} onClose={() => setShowSuccessfulLogin(false)}>
+							<Box sx={{ minWidth: '25vw' }}>
+								<Alert severity="success" >Welcome back!</Alert>
+							</Box>
+						</Snackbar>
+
+						<Snackbar open={loginError !== undefined} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}>
+							<Box sx={{ minWidth: '25vw' }}>
+								<Alert severity="error" onClose={() => setLoginError(undefined)}>{ loginError?.message }</Alert>
+							</Box>
+						</Snackbar>
 					</Grid>
 				</Grid>
 			</Grid>
