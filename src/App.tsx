@@ -1,7 +1,5 @@
-import React from 'react';
-import logo from './logo.svg';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { Grid } from '@material-ui/core'
+import { QueryClient, QueryClientProvider, ReactQueryDevtools } from 'react-query/devtools'
 
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -55,11 +53,16 @@ const theme = createMuiTheme({
   }
 })
 
+const queryClient = new QueryClient()
+
 function App() {  
   return (
     <ThemeProvider theme={theme}>
-      {/* <SignUpPage /> */}
-      <LoginPage />
+      <QueryClientProvider client={queryClient}>
+        {/* <SignUpPage /> */}
+        <LoginPage />
+        <ReactQueryDevtools />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

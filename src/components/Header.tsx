@@ -15,7 +15,7 @@ const Header = () => (
         </Typography>
 
         <Typography variant="subtitle1">
-          wake up, sheeple
+          wake up, *sheeple*
         </Typography>
         </Grid>
 	</Box>
