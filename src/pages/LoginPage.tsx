@@ -80,9 +80,9 @@ export default function LoginPage() {
 
 				<Grid item>
 					<Grid container alignItems='center'>
-							<Box sx={{maxWidth: '60vw', bgcolor: 'white', borderRadius: 20, padding: 20}} margin={5}>
+							<Box sx={{maxWidth: '60vw', bgcolor: '#F6FFEE', borderRadius: 20, padding: 20}} margin={5}>
 								<Typography variant="h4">Climate change. Rising sea-levels. Umbrage man.</Typography>
-								<Box sx={{maxWidth: '60vw'}}>
+								<Box sx={{maxWidth: '60vw', bgcolor: '#F6FFEE'}}>
 									<Typography variant="h6">
 										Good day, ladies and gentlemen. I hope that today, one of our world’s last, finds you well and ready. For, as you know, a threatening future looms over us. Hundred of years ago... (something-something Mayans blah blah...)
 									</Typography>
@@ -99,7 +99,7 @@ export default function LoginPage() {
 					>
 						<Lottie options={toiletpaperOptions} height={250} width={250} />
 
-						<Box sx={{maxWidth: '60vw', bgcolor: 'white', borderRadius: 20, padding: 20}} margin={5}>
+						<Box sx={{maxWidth: '60vw', bgcolor: '#F6FFEE', borderRadius: 20, padding: 20}} margin={5}>
 							<Typography variant="h4">Get Prepared!</Typography>
 							<Box sx={{maxWidth: '60vw'}}>
 								<Typography variant="h6">
@@ -113,7 +113,7 @@ export default function LoginPage() {
 				<Grid item>
 					<Grid container>
 						<Grid item>
-							<Box sx={{maxWidth: '40vw', bgcolor: 'white', borderRadius: 10, padding: 20}} margin={5}>
+							<Box sx={{maxWidth: '40vw', bgcolor: '#F6FFEE', borderRadius: 10, padding: 20}} margin={5}>
 								<Typography variant="h4" gutterBottom>
 									Start planning your demise.
 								</Typography>
@@ -125,7 +125,7 @@ export default function LoginPage() {
 						</Grid>
 
 						<Grid item>
-							<Box sx={{maxWidth: '50vw', bgcolor: 'white', borderRadius: 10, padding: 20}} margin={5}>
+							<Box sx={{minWidth: '45vw', bgcolor: '#f2fd02', borderRadius: 10, padding: 20}} margin={5}>
 								<Typography variant="h4">Welcome back</Typography>
 
 								<TextField

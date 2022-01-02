@@ -81,7 +81,7 @@ export default function SignUpPage() {
 						</Grid>
 
 						<Grid item>
-							<Box sx={{maxWidth: '33vw', bgcolor: '#F6FFEE', borderRadius: 10, padding: 20}}>								
+							<Box sx={{maxWidth: '33vw', bgcolor: '#f2fd02', borderRadius: 10, padding: 20}}>								
 								<Typography variant="h4" gutterBottom>
 									And Join Us.
 								</Typography>
