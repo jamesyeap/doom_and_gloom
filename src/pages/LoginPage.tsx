@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import Lottie from 'react-lottie';
+import explosion from '../lotties/explosion.json';
+import toiletpaper from  '../lotties/toiletpaper.json';
 
 import Header from '../components/Header';
 import { User, Credentials } from '../typings';
@@ -46,6 +49,24 @@ export default function LoginPage() {
 		setStartLogin(true);
 	}
 
+	const explosionOptions = {
+		loop: true,
+		autoplay: true,
+		animationData: explosion,
+		rendererSettings: {
+		  // preserveAspectRatio: "xMidYMid slice"
+		}
+	};
+
+	const toiletpaperOptions = {
+		loop: true,
+		autoplay: true,
+		animationData: toiletpaper,
+		rendererSettings: {
+		  // preserveAspectRatio: "xMidYMid slice"
+		}
+	}
+
 	return (
 		<Box bgcolor='#C6FAD2'>
 			<Grid
@@ -58,14 +79,17 @@ export default function LoginPage() {
 				</Grid>
 
 				<Grid item>
-					<Box sx={{maxWidth: '60vw', bgcolor: 'white', borderRadius: 20, padding: 20}} margin={5}>
-						<Typography variant="h4">Climate change. Rising sea-levels. Umbrage man.</Typography>
-						<Box sx={{maxWidth: '60vw'}}>
-							<Typography variant="h6">
-								Good day, ladies and gentlemen. I hope that today, one of our world’s last, finds you well and ready. For, as you know, a threatening future looms over us. Hundred of years ago... (something-something Mayans blah blah...)
-							</Typography>
-						</Box>
-					</Box>
+					<Grid container alignItems='center'>
+							<Box sx={{maxWidth: '60vw', bgcolor: 'white', borderRadius: 20, padding: 20}} margin={5}>
+								<Typography variant="h4">Climate change. Rising sea-levels. Umbrage man.</Typography>
+								<Box sx={{maxWidth: '60vw'}}>
+									<Typography variant="h6">
+										Good day, ladies and gentlemen. I hope that today, one of our world’s last, finds you well and ready. For, as you know, a threatening future looms over us. Hundred of years ago... (something-something Mayans blah blah...)
+									</Typography>
+								</Box>							
+							</Box>
+							<Lottie options={explosionOptions} height={250} width={250} />
+						</Grid>
 				</Grid>
 
 				<Grid item>
@@ -73,6 +97,8 @@ export default function LoginPage() {
 						container
 						justifyContent='flex-end'
 					>
+						<Lottie options={toiletpaperOptions} height={250} width={250} />
+
 						<Box sx={{maxWidth: '60vw', bgcolor: 'white', borderRadius: 20, padding: 20}} margin={5}>
 							<Typography variant="h4">Get Prepared!</Typography>
 							<Box sx={{maxWidth: '60vw'}}>
