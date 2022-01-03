@@ -68,7 +68,7 @@ export default function LoginPage() {
 	}
 
 	return (
-		<Box bgcolor='#C6FAD2'>
+		<Box sx={{ bgcolor:'#C6FAD2', minWidth: '100vw', minHeight: '100vh' }}>
 			<Grid
 				container
 				direction='column'
@@ -88,7 +88,10 @@ export default function LoginPage() {
 									</Typography>
 								</Box>							
 							</Box>
-							<Lottie options={explosionOptions} height={250} width={250} />
+
+							<Grid item>
+								<Lottie options={explosionOptions} height={250} width={250} />
+							</Grid>
 						</Grid>
 				</Grid>
 

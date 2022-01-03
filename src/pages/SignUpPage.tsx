@@ -47,7 +47,7 @@ export default function SignUpPage() {
 	}
 
 	return (
-		<Box bgcolor='#C6FAD2'>
+		<Box sx={{ bgcolor:'#C6FAD2', minWidth: '100vw', minHeight: '100vh' }}>
 			<Grid
 				container
 				direction='column'
@@ -67,15 +67,26 @@ export default function SignUpPage() {
 						alignItems='center'
 						spacing={2}
 					>
-						
 						<Grid item>
 							<Box sx={{maxWidth: '80vw', bgcolor: '#F6FFEE', borderRadius: 10, padding: 20}}>
 								<Grid item>
-									<Typography variant="h4" gutterBottom>
-										Hurry, put this on,
-									</Typography>
+									<Grid container direction='column' justifyContent='center' alignItems='center'>
+										<Grid item>
+											<Typography variant="h4" gutterBottom>
+												Hurry, put this on,
+											</Typography>
+										</Grid>
+										
+										<Grid item>
+											<img src={tinfoilHat} alt="Tinfoil Hat" width={300} />
+										</Grid>
 
-									<img src={tinfoilHat} alt="Tinfoil Hat" width={300} />
+										<Grid item>
+											<Typography variant="subtitle1" gutterBottom>
+												*5G Deflectron 3000 (batteries included)*
+											</Typography>
+										</Grid>
+									</Grid>
 								</Grid>
 							</Box>
 						</Grid>

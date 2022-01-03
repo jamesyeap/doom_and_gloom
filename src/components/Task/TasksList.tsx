@@ -1,12 +1,14 @@
 import { Grid, Box, Typography, Button } from '@material-ui/core';
 import { Add, FilterList } from '@material-ui/icons';
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useState, createContext } from 'react';
 
 import Task from "./Task";
 import NewTask from './NewTask';
 import NewCategory from './NewCategory';
 import FilterOptions from './FilterOptions';
-import { TaskType } from "../../typings";
+import { TaskType, CategoryType } from "../../typings";
+
+export let TasksListContext = createContext<any>(null);
 
 export default function TasksList() {
 	let data:TaskType[] = generateFakeData();
@@ -41,6 +43,11 @@ export default function TasksList() {
 		setFilterOptionsAnchor(null);
 	}
 
+	// options to filter tasks shown by category or completion status
+	const [categoryFilter, setCategoryFilter] = useState<CategoryType | null>(null);
+	const [categoryInput, setCategoryInput] = useState<string>("");
+	const [completionFilter, setCompletionFilter] = useState<number>(0);
+
 	return (
 		<Box sx={{ bgcolor: '#02075d', borderRadius: 20, padding: 10 }}>
 			<Grid container direction='column' spacing={3}>
@@ -63,7 +70,9 @@ export default function TasksList() {
 						<Grid item>
 							<Button variant="contained" startIcon={<FilterList />} onClick={handleShowFilterOptions}>Filter</Button>
 						</Grid>
-						<FilterOptions id={filterOptionsId} open={showFilterOptions} anchorEl={filterOptionsAnchor} onClose={handleHideFilterOptions} />
+						<TasksListContext.Provider value={{categoryFilter, setCategoryFilter, categoryInput, setCategoryInput, completionFilter, setCompletionFilter}}>
+							<FilterOptions id={filterOptionsId} open={showFilterOptions} anchorEl={filterOptionsAnchor} onClose={handleHideFilterOptions} />
+						</TasksListContext.Provider>
 					</Grid>
 				</Grid>
 
@@ -86,7 +95,7 @@ function generateFakeData(): (TaskType[]) {
 		{
 			id: 0,
 			title: "Buy tin-foil hat.",
-			description: "never hurts to have one more amirite bois amirite boisamirite boisamirite boisamirite boisamirite boisamirite bois",
+			description: "never hurts to have one more amirite bois ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy",
 			category_id: 0,
 			category_name: "supplies",
 			completed: false,
@@ -96,7 +105,7 @@ function generateFakeData(): (TaskType[]) {
 		{
 			id: 1,
 			title: "Hoard toilet paper.",
-			description: "never hurts to have one more amirite bois",
+			description: "never hurts to have one more amirite bois ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy ayyyyyy",
 			completed: false,
 			created_at: String(new Date().getDate()),
 			updated_at: String(new Date().getDate())

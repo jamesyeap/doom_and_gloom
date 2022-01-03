@@ -4,6 +4,10 @@ import { useState } from "react";
 
 export default function NewCategory(props:any) {
 	const [categoryName, setCategoryName] = useState<string | null>(null);
+
+	const handleCreateNewCategory = () => {
+		// TODO
+	}
 	
 	return (
 		<Popover {...props}>
@@ -24,7 +28,7 @@ export default function NewCategory(props:any) {
 							</Grid>
 
 							<Grid item>
-								<Button variant='outlined' startIcon={<CancelOutlined />} onClick={() => props.onClose()}>Discard</Button>
+								<Button startIcon={<CancelOutlined />} onClick={() => props.onClose()}>Discard</Button>
 							</Grid>
 						</Grid>
 					</Grid>		

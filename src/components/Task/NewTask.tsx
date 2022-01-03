@@ -5,20 +5,22 @@ import { useState } from "react";
 
 import { CategoryType } from "../../typings";
 
-// const filter = createFilterOptions<CategoryType>();
-
 export default function NewTask(props:any) {
 	const [title, setTitle] = useState<string | null>(null);
 	const [details, setDetails] = useState<string | null>(null);
 	const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
 	const [categoryInput, setCategoryInput] = useState<string>("");
 
+	const handleCreateNewTask = () => {
+		// TODO
+	}
+
 	return (
 		<Popover {...props}>
 			<Box sx={{ bgcolor: '#F6FFEE', minWidth: '50vw', padding: 30, borderRadius: 20 }}>
 				<Grid container direction='column' spacing={2}>
 					<Grid item>
-						<Typography variant='h4'>What's next?</Typography>
+						<Typography variant='h4'>New Task</Typography>
 					</Grid>
 
 					<Grid item>
@@ -30,8 +32,8 @@ export default function NewTask(props:any) {
 					</Grid>
 
 					<Grid item>
-						<Grid container spacing={2} alignItems='center'>
-							<Grid item xs={7}>
+						<Grid container spacing={1} alignItems='center'>
+							<Grid item xs={8}>
 								<Autocomplete
 									disablePortal
 									id="list-of-categories"
@@ -54,12 +56,12 @@ export default function NewTask(props:any) {
 								/>
 							</Grid>
 
-							<Grid item xs={2}>
-								<Button variant='contained' startIcon={<Check />}>Add</Button>
+							<Grid item>
+								<Button variant='contained' startIcon={<Check />}>Add Task</Button>
 							</Grid>
 
-							<Grid item xs={2}>
-								<Button variant='outlined' startIcon={<CancelOutlined />} onClick={() => props.onClose()}>Discard</Button>
+							<Grid item>
+								<Button startIcon={<CancelOutlined />} onClick={() => props.onClose()}>Discard</Button>
 							</Grid>
 						</Grid>
 					</Grid>

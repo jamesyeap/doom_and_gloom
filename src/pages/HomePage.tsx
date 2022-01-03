@@ -1,5 +1,7 @@
 import { Box, Grid, Typography, Button } from '@material-ui/core';
 import { useQueryClient } from 'react-query';
+import { ExitToApp } from "@material-ui/icons";
+import { useNavigate } from 'react-router-dom';
 
 import Header from '../components/Header';
 import TasksList from '../components/Task/TasksList';
@@ -9,6 +11,12 @@ import { User } from '../typings';
 export default function HomePage() {
 	let queryClient = useQueryClient();
 	let user:(User|undefined) = queryClient.getQueryData('user');
+
+	let navigate = useNavigate();
+
+	const handleLogout = () => {
+		navigate("/");
+	}
 
 	return (
 		<Box sx={{ minWidth: '100vw', minHeight: '100vh', bgcolor: '#C6FAD2' }}>
@@ -22,15 +30,25 @@ export default function HomePage() {
 				</Grid>
 
 				<Grid item>
-					<Grid container>
-						<Grid item xs={10}>
-							<TasksList />
-						</Grid>
+					<Box sx={{ padding: 10 }}>
+						<Grid container spacing={2}>
+							<Grid item xs={10}>
+								<TasksList />
+							</Grid>
 
-						<Grid item xs={2}>
-							<Countdown />
+							<Grid item xs={2}>
+								<Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
+									<Grid item>
+										<Countdown />
+									</Grid>
+									
+									<Grid item>
+										<Button onClick={handleLogout} variant='contained' size='large' startIcon={<ExitToApp />} color="secondary">Log Out</Button>
+									</Grid>
+								</Grid>
+							</Grid>
 						</Grid>
-					</Grid>
+					</Box>
 				</Grid>
 			</Grid>
 		</Box>
