@@ -13,7 +13,7 @@ import { User, Credentials } from '../typings';
 
 const login_API = (username:string, password:string) => {
 	return axios.post(
-		"https://tomato-backend-api.herokuapp.com/login",
+		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/login",
 		{ 
 			username: username,
 			password: password

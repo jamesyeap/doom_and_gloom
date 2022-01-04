@@ -2,18 +2,30 @@ import { Popover, Grid, Box, TextField, Button, Typography } from "@material-ui/
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Check, CancelOutlined } from "@material-ui/icons";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
 
+import { addTask_API } from "./TaskAPI";
 import { CategoryType } from "../../typings";
 
 export default function NewTask(props:any) {
-	const [title, setTitle] = useState<string | null>(null);
-	const [details, setDetails] = useState<string | null>(null);
+	const [title, setTitle] = useState<string>("");
+	const [description, setDescription] = useState<string | null>(null);
 	const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(null);
 	const [categoryInput, setCategoryInput] = useState<string>("");
 
-	const handleCreateNewTask = () => {
-		// TODO
-	}
+	const queryClient = useQueryClient();
+	const addTask = useMutation(
+		() => addTask_API({
+			title, 
+			description, 
+			category_id: selectedCategory?.category_id, 
+			user:queryClient.getQueryData('user')
+		}),
+		{
+			onSuccess: () => queryClient.invalidateQueries('tasks'),
+			onSettled: () => queryClient.invalidateQueries('tasks')
+		}
+	)
 
 	return (
 		<Popover {...props}>
@@ -28,7 +40,7 @@ export default function NewTask(props:any) {
 					</Grid>
 
 					<Grid item>
-					<TextField variant='outlined' fullWidth multiline label='Additional details' value={details} onChange={(e:React.ChangeEvent<HTMLInputElement>) => setDetails(e.target.value)} />
+					<TextField variant='outlined' fullWidth multiline label='Additional details' value={description} onChange={(e:React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)} />
 					</Grid>
 
 					<Grid item>
@@ -57,7 +69,7 @@ export default function NewTask(props:any) {
 							</Grid>
 
 							<Grid item>
-								<Button variant='contained' startIcon={<Check />}>Add Task</Button>
+								<Button onClick={() => addTask.mutate()} variant='contained' startIcon={<Check />}>Add Task</Button>
 							</Grid>
 
 							<Grid item>

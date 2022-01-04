@@ -1,23 +1,71 @@
 import { Grid, Box, Typography, Checkbox, IconButton, Chip, TextField } from '@material-ui/core';
 import { Check, Cancel, Edit, DeleteOutline } from '@material-ui/icons'
 import { useState } from 'react';
-import { TaskType } from "../../typings";
+import { useMutation, useQueryClient } from 'react-query';
+import { TaskType, UpdateTaskAPIParams } from "../../typings";
+
+import { markComplete_API, markIncomplete_API, deleteTask_API, updateTask_API } from './TaskAPI';
 
 export default function Task(props:TaskType) {
 	const [editMode, setEditMode] = useState<boolean>(false);
 	const [title, setTitle] = useState<string>(props.title);
-	const [description, setDescription] = useState<string | null | undefined>(props.description);
+	const [description, setDescription] = useState<string | undefined>(props.description);
 
-	const handleSaveEdit = () => {
-		// TODO
+	const queryClient = useQueryClient();
+
+	const completeTask = useMutation(
+		() => markComplete_API(props.id),
+		{
+			onSuccess: () => queryClient.invalidateQueries('tasks'),
+			onSettled: () => queryClient.invalidateQueries('tasks')
+		}
+	)
+
+	const undoTask = useMutation(
+		() => markIncomplete_API(props.id),
+		{
+			onSuccess: () => queryClient.invalidateQueries('tasks'),
+			onSettled: () => queryClient.invalidateQueries('tasks')
+		}
+	)
+
+	const deleteTask = useMutation(
+		() => deleteTask_API(props.id),
+		{
+			onSuccess: () => queryClient.invalidateQueries('tasks'),
+			onSettled: () => queryClient.invalidateQueries('tasks')
+		}
+	)
+
+	const editTask = useMutation(
+		() => updateTask_API(
+			props.id,
+			title,
+			description,
+			props.deadline,
+			props.category_id
+		), 
+		{
+			onSuccess: () => queryClient.invalidateQueries('tasks'),
+			onSettled: () => queryClient.invalidateQueries('tasks')
+		}
+	)
+
+	const handleChangeTaskCompletion = () => {
+		props.completed 
+			? undoTask.mutate()
+			: completeTask.mutate()			
 	}
 
-	const handleCompleteTask = () => {
-		// TODO
+	const handleSaveEdit = () => {		
+		editTask.mutate();
+		setEditMode(false);
 	}
 
-	const handleUndoTask = () => {
-		// TODO
+	const handleDiscardEdit = () => {
+		setTitle(props.title);
+		setDescription(props.description);
+		setEditMode(false);
 	}
 	
 	return (
@@ -78,7 +126,10 @@ export default function Task(props:TaskType) {
 					{!editMode && (
 					<Grid container direction="column">
 						<Grid item>
-							<Checkbox />
+							<Checkbox
+								checked={props.completed}
+								onChange={handleChangeTaskCompletion}
+							/>
 						</Grid>
 
 						<Grid item>
@@ -88,7 +139,7 @@ export default function Task(props:TaskType) {
 						</Grid>
 
 						<Grid item>
-							<IconButton>
+							<IconButton onClick={() => deleteTask.mutate()}>
 								<DeleteOutline />
 							</IconButton>
 						</Grid>
@@ -98,13 +149,13 @@ export default function Task(props:TaskType) {
 					{editMode && (
 					<Grid container direction="column">
 						<Grid item>
-							<IconButton>
+							<IconButton onClick={handleSaveEdit}>
 								<Check />
 							</IconButton>
 						</Grid>
 
 						<Grid item>
-							<IconButton onClick={() => setEditMode(false)}>
+							<IconButton onClick={handleDiscardEdit}>
 								<Cancel />
 							</IconButton>
 						</Grid>

@@ -15,6 +15,7 @@ export default function HomePage() {
 	let navigate = useNavigate();
 
 	const handleLogout = () => {
+		queryClient.removeQueries('user');
 		navigate("/");
 	}
 

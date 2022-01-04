@@ -1,12 +1,14 @@
 import { Grid, Box, Typography, Button } from '@material-ui/core';
 import { Add, FilterList } from '@material-ui/icons';
-import { MouseEvent, useState, createContext } from 'react';
+import { MouseEvent, useState, createContext, useEffect } from 'react';
 
 import Task from "./Task";
 import NewTask from './NewTask';
 import NewCategory from './NewCategory';
 import FilterOptions from './FilterOptions';
-import { TaskType, CategoryType } from "../../typings";
+import { fetchTasks_API } from './TaskAPI';
+import { User, TaskType, CategoryType } from "../../typings";
+import { useQuery, useQueryClient } from 'react-query';
 
 export let TasksListContext = createContext<any>(null);
 
@@ -48,6 +50,15 @@ export default function TasksList() {
 	const [categoryInput, setCategoryInput] = useState<string>("");
 	const [completionFilter, setCompletionFilter] = useState<number>(0);
 
+	const queryClient = useQueryClient();
+	const tasksQuery = useQuery(
+		'tasks', 
+		() => fetchTasks_API(queryClient.getQueryData('user')),
+		{
+			onSuccess: (data) => console.log(data)
+		}
+	);
+
 	return (
 		<Box sx={{ bgcolor: '#02075d', borderRadius: 20, padding: 10 }}>
 			<Grid container direction='column' spacing={3}>
@@ -78,7 +89,7 @@ export default function TasksList() {
 
 				<Grid item>
 					<Grid container spacing={2}>
-						{data.map(t => (
+						{tasksQuery.data?.map((t:TaskType) => (
 							<Grid item key={t.id}>
 								<Task {...t} />
 							</Grid>

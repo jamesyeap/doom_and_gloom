@@ -11,7 +11,7 @@ import Header from '../components/Header';
 
 const signup_API = (username:string, password:string) => {
 	return axios.post(
-		"https://tomato-backend-api.herokuapp.com/signup",
+		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/signup",
 		{ 
 			username: username,
 			password: password

@@ -27,7 +27,14 @@ export type CategoryType = {
 export interface UpdateTaskAPIParams {
 	id:number,
 	title:string,
-	description?:string,
+	description?:(string|undefined|null),
 	deadline?:string,
 	category_id?:number
+}
+export interface AddTaskAPIParams {
+	title:string,
+	description?:(string|null),
+	category_id?: (number|null),
+	deadline?:string,
+	user?: User
 }
