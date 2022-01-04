@@ -27,6 +27,26 @@ export default function NewTask(props:any) {
 		}
 	)
 
+	const handleAddTask = () => {
+		addTask.mutate();
+		
+		setTitle("");
+		setDescription("");
+		setSelectedCategory(null);
+		setCategoryInput("");
+
+		props.onClose();
+	}
+
+	const handleDiscard = () => {
+		setTitle("");
+		setDescription("");
+		setSelectedCategory(null);
+		setCategoryInput("");
+
+		props.onClose();
+	}
+
 	return (
 		<Popover {...props}>
 			<Box sx={{ bgcolor: '#F6FFEE', minWidth: '50vw', padding: 30, borderRadius: 20 }}>
@@ -69,11 +89,11 @@ export default function NewTask(props:any) {
 							</Grid>
 
 							<Grid item>
-								<Button onClick={() => addTask.mutate()} variant='contained' startIcon={<Check />}>Add Task</Button>
+								<Button onClick={handleAddTask} variant='contained' startIcon={<Check />}>Add Task</Button>
 							</Grid>
 
 							<Grid item>
-								<Button startIcon={<CancelOutlined />} onClick={() => props.onClose()}>Discard</Button>
+								<Button onClick={handleDiscard} startIcon={<CancelOutlined />}>Discard</Button>
 							</Grid>
 						</Grid>
 					</Grid>

@@ -70,7 +70,7 @@ export default function Task(props:TaskType) {
 	
 	return (
 		<Box sx={{ bgcolor: '#F6FFEE', padding: 20, borderRadius: 20, minWidth: '20vw' }}>
-			<Grid container>
+			<Grid container justifyContent='space-between' alignItems='center'>
 				<Grid item>
 					{!editMode && (
 					<Grid container direction="column" spacing={2}>
