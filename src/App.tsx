@@ -57,7 +57,8 @@ const theme = createMuiTheme({
   }
 })
 
-export const url = "http://localhost:8080";
+// export const url = "http://localhost:8080";
+export const url = "https://doom-and-gloom-cvwo2022-api.herokuapp.com";
 
 const queryClient = new QueryClient()
 
