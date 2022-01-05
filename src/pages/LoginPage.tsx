@@ -10,10 +10,11 @@ import toiletpaper from  '../lotties/toiletpaper.json';
 
 import Header from '../components/Header';
 import { User, Credentials } from '../typings';
+import { url } from '../App';
 
 const login_API = (username:string, password:string) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/login",
+		`${url}/login`,
 		{ 
 			username: username,
 			password: password

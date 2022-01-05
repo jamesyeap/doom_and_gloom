@@ -9,9 +9,11 @@ import { User, Credentials } from '../typings';
 import tinfoilHat from '../tinfoil_hat.png';
 import Header from '../components/Header';
 
+import { url } from '../App';
+
 const signup_API = (username:string, password:string) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/signup",
+		`${url}/signup`,
 		{ 
 			username: username,
 			password: password

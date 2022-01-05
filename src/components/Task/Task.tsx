@@ -1,36 +1,47 @@
-import { Grid, Box, Typography, Checkbox, IconButton, Chip, TextField } from '@material-ui/core';
+import { Grid, Box, Typography, Checkbox, IconButton, Chip, TextField, CircularProgress, Popover, Button } from '@material-ui/core';
 import { Check, Cancel, Edit, DeleteOutline } from '@material-ui/icons'
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import { useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
-import { TaskType, UpdateTaskAPIParams } from "../../typings";
+import { useQuery, useMutation, useQueryClient } from 'react-query';
+import { CategoryType, TaskType } from "../../typings";
 
-import { markComplete_API, markIncomplete_API, deleteTask_API, updateTask_API } from './TaskAPI';
+import { markComplete_API, markIncomplete_API, deleteTask_API, updateTask_API, fetchTaskByID_API } from './TaskAPI';
 
-export default function Task(props:TaskType) {
+export default function Task({ id }:{ id:number }) {
+	const taskQuery = useQuery<TaskType, Error>(
+		['task', id], 
+		() => fetchTaskByID_API(id), 
+		{
+			staleTime: Infinity // never refetch a task unless some changes are made
+		}	
+	)
+
 	const [editMode, setEditMode] = useState<boolean>(false);
-	const [title, setTitle] = useState<string>(props.title);
-	const [description, setDescription] = useState<string | undefined>(props.description);
+	const [title, setTitle] = useState<string>(taskQuery.data ? taskQuery.data.title: "");
+	const [description, setDescription] = useState<string | undefined>(taskQuery.data?.description);
+	const [selectedCategory, setSelectedCategory] = useState<CategoryType | undefined | null>({ category_id: taskQuery.data?.category_id || 0, category_name: taskQuery.data?.category_name || "All"});
+	const [categoryInput, setCategoryInput] = useState<string>("");
 
 	const queryClient = useQueryClient();
 
 	const completeTask = useMutation(
-		() => markComplete_API(props.id),
+		() => markComplete_API(id),
 		{
-			onSuccess: () => queryClient.invalidateQueries('tasks'),
-			onSettled: () => queryClient.invalidateQueries('tasks')
+			onSuccess: () => queryClient.invalidateQueries(['task', id]),
+			onSettled: () => queryClient.invalidateQueries(['task', id])
 		}
 	)
 
 	const undoTask = useMutation(
-		() => markIncomplete_API(props.id),
+		() => markIncomplete_API(id),
 		{
-			onSuccess: () => queryClient.invalidateQueries('tasks'),
-			onSettled: () => queryClient.invalidateQueries('tasks')
+			onSuccess: () => queryClient.invalidateQueries(['task', id]),
+			onSettled: () => queryClient.invalidateQueries(['task', id])
 		}
 	)
 
 	const deleteTask = useMutation(
-		() => deleteTask_API(props.id),
+		() => deleteTask_API(id),
 		{
 			onSuccess: () => queryClient.invalidateQueries('tasks'),
 			onSettled: () => queryClient.invalidateQueries('tasks')
@@ -39,22 +50,24 @@ export default function Task(props:TaskType) {
 
 	const editTask = useMutation(
 		() => updateTask_API(
-			props.id,
+			id,
 			title,
 			description,
-			props.deadline,
-			props.category_id
+			taskQuery.data?.deadline,
+			selectedCategory?.category_id
 		), 
 		{
-			onSuccess: () => queryClient.invalidateQueries('tasks'),
-			onSettled: () => queryClient.invalidateQueries('tasks')
+			onSuccess: () => queryClient.invalidateQueries(['task', id]),
+			onSettled: () => queryClient.invalidateQueries(['task', id])
 		}
 	)
 
 	const handleChangeTaskCompletion = () => {
-		props.completed 
-			? undoTask.mutate()
-			: completeTask.mutate()			
+		if (taskQuery.data) {
+			taskQuery.data.completed 
+				? undoTask.mutate()
+				: completeTask.mutate()
+		}
 	}
 
 	const handleSaveEdit = () => {		
@@ -63,30 +76,60 @@ export default function Task(props:TaskType) {
 	}
 
 	const handleDiscardEdit = () => {
-		setTitle(props.title);
-		setDescription(props.description);
+		setTitle(taskQuery.data ? taskQuery.data.title: "");
+		setDescription(taskQuery.data?.description);
 		setEditMode(false);
+	}
+
+	// get a list of categories created by the user
+	let data:CategoryType[] = [{category_id: -1, category_name: "All"} ];
+	let userCategories:(CategoryType[] | undefined) = queryClient.getQueryData('categories');
+	userCategories?.forEach((c:CategoryType) => data.push(c));
+
+	const [categoryListAnchor, setCategoryListAnchor] = useState<HTMLButtonElement | null>(null);	
+	const showCategoryList = Boolean(categoryListAnchor);
+	const categoryListId = showCategoryList ? 'add-category-tag-form' : undefined;
+	const handleStartTagTask = (event:any) => {
+		setCategoryListAnchor(event.currentTarget);
+	};
+	const handleDiscardTagTask = () => {
+		setCategoryListAnchor(null);
+	}
+	const handleUntagTask = () => {
+		// TODO
+	};
+
+	if (taskQuery.isFetching) {
+		return (
+			<Box sx={{ bgcolor: '#F6FFEE', padding: 10, borderRadius: 20, minWidth: '20vw', minHeight: '15vh' }}>
+				<Grid container justifyContent='center' alignItems='center'>
+					<Grid item>
+						<CircularProgress size={100} />
+					</Grid>
+				</Grid>
+			</Box>
+		)
 	}
 	
 	return (
-		<Box sx={{ bgcolor: '#F6FFEE', padding: 20, borderRadius: 20, minWidth: '20vw' }}>
+		<Box sx={{ bgcolor: '#F6FFEE', padding: 20, borderRadius: 20, minWidth: '20vw', minHeight: '10vh' }}>
 			<Grid container justifyContent='space-between' alignItems='center'>
 				<Grid item>
 					{!editMode && (
 					<Grid container direction="column" spacing={2}>
 						<Grid item>
-							<Typography variant="h4">{props.title}</Typography>
+							<Typography variant="h4">{taskQuery.data ? taskQuery.data.title: ""}</Typography>
 						</Grid>
 
 						<Grid item>
 							<Box sx={{maxWidth: '20vw'}}>
-								<Typography variant="body1">{props.description}</Typography>
+								<Typography variant="body1">{taskQuery.data?.description}</Typography>
 							</Box>
 						</Grid>
 
-						{props.category_name ? (
+						{taskQuery.data?.category_name ? (
 						<Grid item>
-							<Chip label={props.category_name} variant="outlined" />
+							<Chip label={taskQuery.data?.category_name} variant="outlined" />
 						</Grid>
 						) : (
 						<Grid item>
@@ -117,6 +160,52 @@ export default function Task(props:TaskType) {
 									fullWidth
 								/>
 							</Grid>
+
+							<Grid item>
+							{(taskQuery.data?.category_name !== "All") ? (
+							<Grid item>
+								<Chip onDelete={handleUntagTask} label={taskQuery.data?.category_name} variant="outlined" />
+							</Grid>
+							) : (
+							<Grid item>
+								<Chip onClick={handleStartTagTask} label="add category" variant="outlined" />
+							</Grid>
+							)}
+							</Grid>
+
+							{showCategoryList && (
+							<Popover
+								id={categoryListId} 
+								open={showCategoryList} 
+								anchorEl={categoryListAnchor} 
+								onClose={handleDiscardTagTask}
+							>
+								<Grid item>
+									<Box sx={{ minWidth: '20vw', minHeight: ' 30vh', padding: 20, borderRadius: 20}}>
+										<Autocomplete
+											disablePortal
+											id="list-of-categories"
+											options={data}
+											renderInput={(params) => <TextField {...params} label="Category" />}
+											getOptionLabel={(option: CategoryType) => option.category_name}
+
+											value={selectedCategory}
+											onChange={(event: any, newValue:(CategoryType | null)) => {
+												setSelectedCategory(newValue)
+											}}
+
+											inputValue={categoryInput}
+											onInputChange={(event:any, newInputValue:string) => {
+												setCategoryInput(newInputValue)
+											}}
+										/>
+
+										<Button>Confirm</Button>
+										<Button>Cancel</Button>
+									</Box>
+								</Grid>
+							</Popover>)
+							}
 						</Grid>
 					</Box>
 					)}
@@ -127,7 +216,7 @@ export default function Task(props:TaskType) {
 					<Grid container direction="column">
 						<Grid item>
 							<Checkbox
-								checked={props.completed}
+								checked={taskQuery.data?.completed}
 								onChange={handleChangeTaskCompletion}
 							/>
 						</Grid>

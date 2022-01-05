@@ -1,30 +1,33 @@
 import { Popover, Grid, Box, Typography, TextField, Select, MenuItem, Button } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { Check, Replay } from "@material-ui/icons";
-import { useState, useContext } from "react";
+import { useContext } from "react";
+import { useQueryClient } from "react-query";
 
 import { TasksListContext } from "./TasksList";
-import { fakeCategories } from "./NewTask";
 import { CategoryType } from "../../typings";
 
 export default function FilterOptions(props:any) {
 	const { categoryFilter, setCategoryFilter, categoryInput, setCategoryInput, completionFilter, setCompletionFilter} = useContext(TasksListContext);
 
-	const handleSetFilter = () => {
-		// TODO
+	const queryClient = useQueryClient();
 
+	const handleSetFilter = () => {
 		props.onClose();
 	}
 
 	const handleReset = () => {
-		// TODO
-		
-		setCategoryFilter(null);
+		props.onClose();
+
+		setCategoryFilter({ category_id: -1, category_name: "All" });
 		setCategoryInput("");
 		setCompletionFilter(0);
-
-		props.onClose();
 	}
+
+	// get a list of categories created by the user
+	let data:CategoryType[] = [ {category_id: -1, category_name: "All"} ];
+	let userCategories:(CategoryType[] | undefined) = queryClient.getQueryData('categories');
+	userCategories?.forEach((c:CategoryType) => data.push(c));
 	
 	return (
 		<Popover {...props}>
@@ -38,16 +41,14 @@ export default function FilterOptions(props:any) {
 						<Autocomplete
 							disablePortal
 							id="list-of-categories"
-							options={fakeCategories}
+							options={data}							
 							renderInput={(params) => <TextField {...params} label="Category" />}
 							getOptionLabel={(option: CategoryType) => option.category_name}
 
 							value={categoryFilter}
+							defaultValue={{category_id: -1, category_name: "All"}}
 							onChange={(event: any, newValue: CategoryType | null) => {
-								setCategoryFilter(newValue)
-
-								// for testing only, -> delete in production
-								console.log(categoryFilter);
+								setCategoryFilter(newValue === null ? {category_id: -1, category_name: "All"} : newValue)
 							}}
 
 							inputValue={categoryInput}

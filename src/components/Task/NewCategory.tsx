@@ -1,12 +1,36 @@
 import { Popover, Grid, Box, TextField, Button, Typography } from "@material-ui/core";
 import { Check, CancelOutlined } from "@material-ui/icons";
+import { useMutation, useQueryClient } from "react-query";
 import { useState } from "react";
 
+import { addCategory_API } from "./TaskAPI";
+
 export default function NewCategory(props:any) {
-	const [categoryName, setCategoryName] = useState<string | null>(null);
+	const [categoryName, setCategoryName] = useState<string>("");
+
+	let queryClient = useQueryClient();
+
+	const addCategory = useMutation(
+		() => addCategory_API(
+			queryClient.getQueryData('user'),
+			categoryName
+		), 
+		{
+			onSettled: () => queryClient.invalidateQueries('categories')
+		}
+	)
 
 	const handleCreateNewCategory = () => {
-		// TODO
+		if (categoryName !== "") {
+			addCategory.mutate();
+
+			props.onClose();
+		}
+	}
+
+	const handleDiscardNewCategory = () => {
+		setCategoryName("");
+		props.onClose();
 	}
 	
 	return (
@@ -24,11 +48,11 @@ export default function NewCategory(props:any) {
 					<Grid item>
 						<Grid container spacing={2}>
 							<Grid item>
-								<Button variant='contained' startIcon={<Check />}>Add</Button>
+								<Button onClick={handleCreateNewCategory} variant='contained' startIcon={<Check />}>Add</Button>
 							</Grid>
 
 							<Grid item>
-								<Button startIcon={<CancelOutlined />} onClick={() => props.onClose()}>Discard</Button>
+								<Button onClick={handleDiscardNewCategory} startIcon={<CancelOutlined />}>Discard</Button>
 							</Grid>
 						</Grid>
 					</Grid>		

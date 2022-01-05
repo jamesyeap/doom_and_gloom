@@ -1,4 +1,4 @@
-import { Grid, Box, Typography, Button } from '@material-ui/core';
+import { Grid, Box, Typography, Button, CircularProgress } from '@material-ui/core';
 import { Add, FilterList } from '@material-ui/icons';
 import { MouseEvent, useState, createContext, useEffect } from 'react';
 
@@ -6,7 +6,7 @@ import Task from "./Task";
 import NewTask from './NewTask';
 import NewCategory from './NewCategory';
 import FilterOptions from './FilterOptions';
-import { fetchTasks_API } from './TaskAPI';
+import { fetchCategories_API, fetchTasks_API } from './TaskAPI';
 import { User, TaskType, CategoryType } from "../../typings";
 import { useQuery, useQueryClient } from 'react-query';
 
@@ -36,64 +36,99 @@ export default function TasksList() {
 	}
 
 	const [filterOptionsAnchor, setFilterOptionsAnchor] = useState<HTMLButtonElement | null>(null);	
-	const showFilterOptions = Boolean(filterOptionsAnchor);
-	const filterOptionsId = showFilterOptions ? 'filter-options' : undefined;
 	const handleShowFilterOptions = (event: MouseEvent<HTMLButtonElement>) => {
 		setFilterOptionsAnchor(event.currentTarget);
 	};
 	const handleHideFilterOptions = () => {
 		setFilterOptionsAnchor(null);
 	}
+	const showFilterOptions = Boolean(filterOptionsAnchor);
+	const filterOptionsId = showFilterOptions ? 'filter-options' : undefined;
 
 	// options to filter tasks shown by category or completion status
-	const [categoryFilter, setCategoryFilter] = useState<CategoryType | null>(null);
+	const [categoryFilter, setCategoryFilter] = useState<CategoryType>({ category_id: -1, category_name: "All" });
 	const [categoryInput, setCategoryInput] = useState<string>("");
 	const [completionFilter, setCompletionFilter] = useState<number>(0);
 
 	const queryClient = useQueryClient();
 	const tasksQuery = useQuery(
-		'tasks', 
-		() => fetchTasks_API(queryClient.getQueryData('user')),
+		['tasks', categoryFilter?.category_id, completionFilter], 
+		() => fetchTasks_API(
+			queryClient.getQueryData('user'),
+			categoryFilter.category_id,
+			completionFilter
+		),
 		{
-			onSuccess: (data) => console.log(data)
+			onSuccess: (data) => {
+				// create a Query for each individual task so that we won't
+				//		have to refetch the entire-task list when we edit a task
+				data.forEach((task:TaskType) => queryClient.setQueryData(['task', task.id], task));
+			},
+			staleTime: Infinity // task list is never refreshed unless tasks are added/edited/deleted
 		}
 	);
+	const categoriesQuery = useQuery(
+		'categories', () => fetchCategories_API(queryClient.getQueryData('user')), 
+		{
+			staleTime: Infinity // never refetch list of categories unless a new category is added
+		}
+ 	)
+
+	if (tasksQuery.isLoading || tasksQuery.isFetching) {
+		return (
+			<Box sx={{ bgcolor: '#02075d', borderRadius: 20, padding: 30, minHeight: '60vh' }}>
+				<Grid container alignItems='center' justifyContent='center'>
+					<Grid item>
+						<CircularProgress size={200} />
+					</Grid>
+				</Grid>
+			</Box>
+		)
+	}
 
 	return (
-		<Box sx={{ bgcolor: '#02075d', borderRadius: 20, padding: 10 }}>
+		<Box sx={{ bgcolor: '#02075d', borderRadius: 20, padding: 30, minHeight: '60vh' }}>
 			<Grid container direction='column' spacing={3}>
 				<Grid item>
-					<Grid container direction='row' spacing={2} justifyContent='center' alignItems='center'>
-						<Grid item>
+					<Grid container direction='row' alignItems='center' justifyContent='space-between'>
+						<Grid item>							
 							<Typography variant='h4'>Well don't just stand there, hoard something!</Typography>
 						</Grid>
 
 						<Grid item>
-							<Button variant="contained" startIcon={<Add />} onClick={handleStartNewTask}>Add Task</Button>
-						</Grid>
-						<NewTask id={newTaskFormId} open={showNewTaskForm} anchorEl={newTaskAnchor} onClose={handleDiscardNewTask} />
+							<Grid container spacing={1}>
+								<Grid item>
+									<Button variant="contained" startIcon={<Add />} onClick={handleStartNewTask}>Add Task</Button>
+								</Grid>
+								<NewTask id={newTaskFormId} open={showNewTaskForm} anchorEl={newTaskAnchor} onClose={handleDiscardNewTask} />
 
-						<Grid item>
-							<Button variant="contained" startIcon={<Add />} onClick={handleStartNewCategory}>Add Category</Button>
-						</Grid>
-						<NewCategory id={newCategoryFormId} open={showNewCategoryForm} anchorEl={newCategoryAnchor} onClose={handleDiscardNewCategory} />
+								<Grid item>
+									<Button variant="contained" startIcon={<Add />} onClick={handleStartNewCategory}>Add Category</Button>
+								</Grid>
+								<NewCategory id={newCategoryFormId} open={showNewCategoryForm} anchorEl={newCategoryAnchor} onClose={handleDiscardNewCategory} />
 
-						<Grid item>
-							<Button variant="contained" startIcon={<FilterList />} onClick={handleShowFilterOptions}>Filter</Button>
+								<Grid item>
+									<Button variant="contained" startIcon={<FilterList />} onClick={handleShowFilterOptions}>Filter</Button>
+								</Grid>
+								<TasksListContext.Provider value={{categoryFilter, setCategoryFilter, categoryInput, setCategoryInput, completionFilter, setCompletionFilter}}>
+									<FilterOptions id={filterOptionsId} open={showFilterOptions} anchorEl={filterOptionsAnchor} onClose={handleHideFilterOptions} />
+								</TasksListContext.Provider>
+							</Grid>
 						</Grid>
-						<TasksListContext.Provider value={{categoryFilter, setCategoryFilter, categoryInput, setCategoryInput, completionFilter, setCompletionFilter}}>
-							<FilterOptions id={filterOptionsId} open={showFilterOptions} anchorEl={filterOptionsAnchor} onClose={handleHideFilterOptions} />
-						</TasksListContext.Provider>
 					</Grid>
 				</Grid>
 
 				<Grid item>
 					<Grid container spacing={2}>
-						{tasksQuery.data?.map((t:TaskType) => (
-							<Grid item key={t.id}>
-								<Task {...t} />
-							</Grid>
-						))}
+						{
+						tasksQuery.data
+							? (tasksQuery.data?.map((t:TaskType) => (
+								<Grid item key={t.id}>
+									<Task id={t.id} />
+								</Grid>
+							)))
+							: (<Grid item><Typography variant='h4'>Looks like there's nothing here.</Typography></Grid>)
+						}
 					</Grid>
 				</Grid>
 			</Grid>

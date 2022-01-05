@@ -14,6 +14,12 @@ export default function NewTask(props:any) {
 	const [categoryInput, setCategoryInput] = useState<string>("");
 
 	const queryClient = useQueryClient();
+
+	// get a list of categories created by the user
+	let data:CategoryType[] = [{category_id: -1, category_name: "All"} ];
+	let userCategories:(CategoryType[] | undefined) = queryClient.getQueryData('categories');
+	userCategories?.forEach((c:CategoryType) => data.push(c));
+
 	const addTask = useMutation(
 		() => addTask_API({
 			title, 
@@ -69,16 +75,13 @@ export default function NewTask(props:any) {
 								<Autocomplete
 									disablePortal
 									id="list-of-categories"
-									options={fakeCategories}
+									options={data}
 									renderInput={(params) => <TextField {...params} label="Category" />}
 									getOptionLabel={(option: CategoryType) => option.category_name}
 
 									value={selectedCategory}
 									onChange={(event: any, newValue: CategoryType | null) => {
 										setSelectedCategory(newValue)
-
-										// for testing only, -> delete in production
-										console.log(selectedCategory);
 									}}
 
 									inputValue={categoryInput}

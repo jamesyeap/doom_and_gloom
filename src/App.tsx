@@ -57,8 +57,9 @@ const theme = createMuiTheme({
   }
 })
 
-const queryClient = new QueryClient()
+export const url = "http://localhost:8080";
 
+const queryClient = new QueryClient()
 
 function App() {  
   return (

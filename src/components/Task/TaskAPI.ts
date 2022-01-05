@@ -1,34 +1,30 @@
 // functions to make API calls to backend
 import axios from "axios";
 
-import { User, UpdateTaskAPIParams, AddTaskAPIParams } from "../../typings";
+import { url } from "../../App";
+import { User, AddTaskAPIParams } from "../../typings";
 
-export const fetchTasks_API = (user:(User|undefined)) => {
+export const fetchTasks_API = (user:(User|undefined), category_id:number, completion_status:number) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/alltasks",
-		JSON.stringify(user)
-		).then(res => { console.log(res); return res.data; });
+		`${url}/gettasks`,
+		{
+			user,
+			category_id,
+			completion_status
+		}
+	).then(res => { return res.data; });
 }
 
 export const fetchTaskByID_API = (id:number) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/gettask",
+		`${url}/gettask`,
 		{ id: id }
-	);
-}
-
-export const fetchTaskByCategoryID_API = (category_id:number) => {
-	console.log("fetching category_id: %d", category_id);
-
-	return axios.post(
-		"http://doom-and-gloom-cvwo2022-api.herokuapp.com/gettaskbycategoryid",
-		{ category_id: category_id }
-	)
+	).then(res => res.data);
 }
 
 export const addTask_API = (newTask:AddTaskAPIParams) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/addtask",
+		`${url}/addtask`,
 		{ ...newTask, 
 			deadline: newTask.deadline ? newTask.deadline : null
 		}
@@ -37,7 +33,7 @@ export const addTask_API = (newTask:AddTaskAPIParams) => {
 
 export const markComplete_API = (id:number) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/completetask",
+		`${url}/completetask`,
 		{ 
 			id,
 		}
@@ -46,20 +42,14 @@ export const markComplete_API = (id:number) => {
 
 export const markIncomplete_API = (id:number) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/incompletetask",
+		`${url}/incompletetask`,
 		{ id: id }
 	);
 }
-	// export interface UpdateTaskAPIParams {
-	// 	id:number,
-	// 	title:string,
-	// 	description?:string,
-	// 	deadline?:string,
-	// 	category_id?:number
-	// }
+
 export const updateTask_API = (id:number, title:string, description?:string, deadline?:string, category_id?:number) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/updatetask",
+		`${url}/updatetask`,
 		{
 			id,
 			title,
@@ -71,7 +61,24 @@ export const updateTask_API = (id:number, title:string, description?:string, dea
 
 export const deleteTask_API = (id:number) => {
 	return axios.post(
-		"https://doom-and-gloom-cvwo2022-api.herokuapp.com/deletetask",
+		`${url}/deletetask`,
 		{id: id}
 	);
+}
+
+export const fetchCategories_API = (user:(User|undefined)) => {
+	return axios.post(
+		`${url}/allcategories`,
+		JSON.stringify(user)
+		).then(res => { return res.data; });	
+}
+
+export const addCategory_API = (user:(User|undefined), category_name: string) => {
+	return axios.post(
+		`${url}/addcategory`,
+		{
+			user,
+			category_name
+		}
+	).then(res => { return res.data; });
 }

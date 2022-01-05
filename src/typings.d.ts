@@ -24,13 +24,6 @@ export type CategoryType = {
 	category_id: number,
 	category_name: string
 }
-export interface UpdateTaskAPIParams {
-	id:number,
-	title:string,
-	description?:(string|undefined|null),
-	deadline?:string,
-	category_id?:number
-}
 export interface AddTaskAPIParams {
 	title:string,
 	description?:(string|null),
