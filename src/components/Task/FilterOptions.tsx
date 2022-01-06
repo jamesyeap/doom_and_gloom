@@ -12,10 +12,6 @@ export default function FilterOptions(props:any) {
 
 	const queryClient = useQueryClient();
 
-	const handleSetFilter = () => {
-		props.onClose();
-	}
-
 	const handleReset = () => {
 		props.onClose();
 
@@ -27,7 +23,9 @@ export default function FilterOptions(props:any) {
 	// get a list of categories created by the user
 	let data:CategoryType[] = [ {category_id: -1, category_name: "All"} ];
 	let userCategories:(CategoryType[] | undefined) = queryClient.getQueryData('categories');
-	userCategories?.forEach((c:CategoryType) => data.push(c));
+	if (userCategories) {
+		data = userCategories;	
+	}
 	
 	return (
 		<Popover {...props}>
@@ -75,13 +73,9 @@ export default function FilterOptions(props:any) {
 					</Grid>
 
 					<Grid item>
-							<Grid container spacing={2}>
+							<Grid container spacing={2}>							
 								<Grid item>
-									<Button onClick={handleSetFilter} variant='contained' startIcon={<Check />}>Confirm</Button>
-								</Grid>
-
-								<Grid item>
-									<Button onClick={handleReset} startIcon={<Replay />}>Reset</Button>
+									<Button onClick={handleReset} startIcon={<Replay />}>Reset Filter</Button>
 								</Grid>
 							</Grid>
 					</Grid>				

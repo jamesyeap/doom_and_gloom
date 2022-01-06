@@ -73,19 +73,24 @@ export default function LoginPage() {
 			<Grid
 				container
 				direction='column'
-				justifyContent='center'
+				justifyContent='center'				
 			>
+				
 				<Grid item>
 					<Header />
-				</Grid>
+				</Grid>				
 
 				<Grid item>
 					<Grid container alignItems='center'>
 							<Box sx={{maxWidth: '60vw', bgcolor: '#F6FFEE', borderRadius: 20, padding: 20}} margin={5}>
-								<Typography variant="h4">Climate change. Rising sea-levels. Umbrage man.</Typography>
+								<Typography variant="h4">Climate change! Rising sea-levels! The Antichrist!</Typography>
 								<Box sx={{maxWidth: '60vw', bgcolor: '#F6FFEE'}}>
 									<Typography variant="h6">
-										Good day, ladies and gentlemen. I hope that today, one of our world’s last, finds you well and ready. For, as you know, a threatening future looms over us. Hundred of years ago... (something-something Mayans blah blah...)
+										{`
+										Oh my, the world could end for so many reasons! 
+										I could go on: A zombie apocalypse. The coming of the Antichrist. The Illuminati.
+										Are we doomed?
+										`}
 									</Typography>
 								</Box>							
 							</Box>
@@ -107,7 +112,7 @@ export default function LoginPage() {
 							<Typography variant="h4">Get Prepared!</Typography>
 							<Box sx={{maxWidth: '60vw'}}>
 								<Typography variant="h6">
-									But fear not, sheeple, for you can get prepared. Stock up on food, water, and toilet paper, and you'll be set to ride out humanity's last days in comfort.
+									Fear not, sheeple, for you still can do the most logical thing ever in times of crises: hoard. So grab a tinfoil hat, and rush down to your nearest supermarket. Stock up on food, water, and toilet paper, and you'll be set to ride out humanity's last days in comfort.
 								</Typography>
 							</Box>
 						</Box>
@@ -129,7 +134,7 @@ export default function LoginPage() {
 						</Grid>
 
 						<Grid item>
-							<Box sx={{minWidth: '45vw', bgcolor: '#f2fd02', borderRadius: 10, padding: 20}} margin={5}>
+							<Box sx={{minWidth: '45vw', bgcolor: '#DFE667', borderRadius: 10, padding: 20 }} margin={5}>
 								<Typography variant="h4">Welcome back</Typography>
 
 								<TextField

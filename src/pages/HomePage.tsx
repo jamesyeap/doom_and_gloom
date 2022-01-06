@@ -33,11 +33,11 @@ export default function HomePage() {
 				<Grid item>
 					<Box sx={{ padding: 10 }}>
 						<Grid container spacing={2}>
-							<Grid item xs={10}>
+							<Grid item xs={9}>
 								<TasksList />
 							</Grid>
 
-							<Grid item xs={2}>
+							<Grid item>
 								<Grid container direction='column' justifyContent='center' alignItems='center' spacing={2}>
 									<Grid item>
 										<Countdown />

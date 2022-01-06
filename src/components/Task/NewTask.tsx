@@ -18,7 +18,9 @@ export default function NewTask(props:any) {
 	// get a list of categories created by the user
 	let data:CategoryType[] = [{category_id: -1, category_name: "All"} ];
 	let userCategories:(CategoryType[] | undefined) = queryClient.getQueryData('categories');
-	userCategories?.forEach((c:CategoryType) => data.push(c));
+	if (userCategories) {
+		data = userCategories;	
+	}
 
 	const addTask = useMutation(
 		() => addTask_API({

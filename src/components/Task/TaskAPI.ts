@@ -54,6 +54,7 @@ export const updateTask_API = (id:number, title:string, description?:string, dea
 			id,
 			title,
 			description: description ? description : "",
+			category_id,
 			deadline: deadline ? deadline : ""
 		}
 	)

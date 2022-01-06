@@ -53,105 +53,109 @@ export default function SignUpPage() {
 			<Grid
 				container
 				direction='column'
-				justifyContent='center'
-				alignItems='center'
+				justifyContent='center'				
 			>
-				<Header />
-				<Box 
-					bgcolor='#C6FAD2'
-					padding={5}
-					sx={{ minWidth: '100vw' }}
-				>
-					<Grid 
-						container
-						direction='row'
-						justifyContent='center'
-						alignItems='center'
-						spacing={2}
+				<Grid item>
+					<Header />
+				</Grid>
+
+				<Grid item>
+					<Box 
+						bgcolor='#C6FAD2'
+						padding={5}
+						sx={{ minWidth: '100vw' }}
 					>
-						<Grid item>
-							<Box sx={{maxWidth: '80vw', bgcolor: '#F6FFEE', borderRadius: 10, padding: 20}}>
-								<Grid item>
-									<Grid container direction='column' justifyContent='center' alignItems='center'>
-										<Grid item>
-											<Typography variant="h4" gutterBottom>
-												Hurry, put this on,
-											</Typography>
-										</Grid>
-										
-										<Grid item>
-											<img src={tinfoilHat} alt="Tinfoil Hat" width={300} />
-										</Grid>
+						<Grid 
+							container
+							direction='row'
+							justifyContent='center'
+							alignItems='center'
+							spacing={2}
+						>
+							<Grid item>
+								<Box sx={{maxWidth: '80vw', bgcolor: '#F6FFEE', borderRadius: 10, padding: 20}}>
+									<Grid item>
+										<Grid container direction='column' justifyContent='center' alignItems='center'>
+											<Grid item>
+												<Typography variant="h4" gutterBottom>
+													Hurry, put this on,
+												</Typography>
+											</Grid>
+											
+											<Grid item>
+												<img src={tinfoilHat} alt="Tinfoil Hat" width={300} />
+											</Grid>
 
-										<Grid item>
-											<Typography variant="subtitle1" gutterBottom>
-												*5G Deflectron 3000 (batteries included)*
-											</Typography>
-										</Grid>
-									</Grid>
-								</Grid>
-							</Box>
-						</Grid>
-
-						<Grid item>
-							<Box sx={{maxWidth: '33vw', bgcolor: '#f2fd02', borderRadius: 10, padding: 20}}>								
-								<Typography variant="h4" gutterBottom>
-									And Join Us.
-								</Typography>
-									<TextField
-										label="Choose a username"
-										variant="filled"
-										helperText="not your real name; the lizard people are listening."
-										fullWidth
-										value={username}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-									/>
-
-									<TextField
-										label="Choose a really secure password"
-										variant="filled"
-										type="password"
-										helperText="don't let them get to you; I mean, your account."
-										fullWidth
-										value={password}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-									/>
-
-									<Grid container spacing={1}>
-										<Grid item>
-											<Button variant="contained" color="primary" onClick={handleSignUp}>
-												Create account.
-											</Button>
-										</Grid>
-
-										<Grid item>
-											<Button variant="outlined" color="secondary" component={Link} to="/" >
-												Oh, you already have an account?
-											</Button>
+											<Grid item>
+												<Typography variant="subtitle1" gutterBottom>
+													*5G Deflectron 3000 (batteries included)*
+												</Typography>
+											</Grid>
 										</Grid>
 									</Grid>
+								</Box>
+							</Grid>
 
-									<Snackbar open={signupQuery.isFetching} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}>
-										<Box sx={{ minWidth: '25vw' }}>
-											<Alert severity="info" >Creating a new account for you.</Alert>
-										</Box>
-									</Snackbar>
+							<Grid item>
+								<Box sx={{maxWidth: '33vw', bgcolor: '#DFE667', borderRadius: 10, padding: 20}}>								
+									<Typography variant="h4" gutterBottom>
+										And Join Us.
+									</Typography>
+										<TextField
+											label="Choose a username"
+											variant="filled"
+											helperText="not your real name; the lizard people are listening."
+											fullWidth
+											value={username}
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+										/>
 
-									<Snackbar open={showSuccessfulSignup} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }} autoHideDuration={1000} onClose={() => setShowSuccessfulSignup(false)}>
-										<Box sx={{ minWidth: '25vw' }}>
-											<Alert severity="success" >Welcome, fellow woke person.</Alert>
-										</Box>
-									</Snackbar>
+										<TextField
+											label="Choose a really secure password"
+											variant="filled"
+											type="password"
+											helperText="don't let them get to you; I mean, your account."
+											fullWidth
+											value={password}
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+										/>
 
-									<Snackbar open={signupError !== undefined} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}>
-										<Box sx={{ minWidth: '25vw' }}>
-											<Alert severity="error" onClose={() => setSignupError(undefined)}>{ signupError?.message }</Alert>
-										</Box>
-									</Snackbar>															
-							</Box>
+										<Grid container spacing={1}>
+											<Grid item>
+												<Button variant="contained" color="primary" onClick={handleSignUp}>
+													Create account.
+												</Button>
+											</Grid>
+
+											<Grid item>
+												<Button variant="outlined" color="secondary" component={Link} to="/" >
+													Oh, you already have an account?
+												</Button>
+											</Grid>
+										</Grid>
+
+										<Snackbar open={signupQuery.isFetching} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}>
+											<Box sx={{ minWidth: '25vw' }}>
+												<Alert severity="info" >Creating a new account for you.</Alert>
+											</Box>
+										</Snackbar>
+
+										<Snackbar open={showSuccessfulSignup} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }} autoHideDuration={1000} onClose={() => setShowSuccessfulSignup(false)}>
+											<Box sx={{ minWidth: '25vw' }}>
+												<Alert severity="success" >Welcome, fellow woke person.</Alert>
+											</Box>
+										</Snackbar>
+
+										<Snackbar open={signupError !== undefined} anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}>
+											<Box sx={{ minWidth: '25vw' }}>
+												<Alert severity="error" onClose={() => setSignupError(undefined)}>{ signupError?.message }</Alert>
+											</Box>
+										</Snackbar>															
+								</Box>
+							</Grid>
 						</Grid>
-					</Grid>
-				</Box>
+					</Box>
+				</Grid>
 			</Grid>
 		</Box>
 	)

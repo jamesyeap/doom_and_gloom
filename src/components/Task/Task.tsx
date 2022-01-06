@@ -19,7 +19,7 @@ export default function Task({ id }:{ id:number }) {
 	const [editMode, setEditMode] = useState<boolean>(false);
 	const [title, setTitle] = useState<string>(taskQuery.data ? taskQuery.data.title: "");
 	const [description, setDescription] = useState<string | undefined>(taskQuery.data?.description);
-	const [selectedCategory, setSelectedCategory] = useState<CategoryType | undefined | null>({ category_id: taskQuery.data?.category_id || 0, category_name: taskQuery.data?.category_name || "All"});
+	const [selectedCategory, setSelectedCategory] = useState<CategoryType | undefined | null>({ category_id: taskQuery.data?.category_id || 0, category_name: taskQuery.data?.category_name || "All" });
 	const [categoryInput, setCategoryInput] = useState<string>("");
 
 	const queryClient = useQueryClient();
@@ -84,19 +84,25 @@ export default function Task({ id }:{ id:number }) {
 	// get a list of categories created by the user
 	let data:CategoryType[] = [{category_id: -1, category_name: "All"} ];
 	let userCategories:(CategoryType[] | undefined) = queryClient.getQueryData('categories');
-	userCategories?.forEach((c:CategoryType) => data.push(c));
+	if (userCategories) {
+		data = userCategories;	
+	}
 
 	const [categoryListAnchor, setCategoryListAnchor] = useState<HTMLButtonElement | null>(null);	
-	const showCategoryList = Boolean(categoryListAnchor);
+	const showCategoryList = Boolean(categoryListAnchor)
 	const categoryListId = showCategoryList ? 'add-category-tag-form' : undefined;
 	const handleStartTagTask = (event:any) => {
 		setCategoryListAnchor(event.currentTarget);
 	};
+	const handleConfirmTagTask = () => {
+		setCategoryListAnchor(null);
+	}
 	const handleDiscardTagTask = () => {
+		setSelectedCategory({ category_id: taskQuery.data?.category_id || 0, category_name: taskQuery.data?.category_name || "All" })
 		setCategoryListAnchor(null);
 	}
 	const handleUntagTask = () => {
-		// TODO
+		setSelectedCategory({ category_id: 0, category_name: "All" });
 	};
 
 	if (taskQuery.isFetching) {
@@ -162,9 +168,9 @@ export default function Task({ id }:{ id:number }) {
 							</Grid>
 
 							<Grid item>
-							{(taskQuery.data?.category_name !== "All") ? (
+							{(selectedCategory?.category_name !== "All") ? (
 							<Grid item>
-								<Chip onDelete={handleUntagTask} label={taskQuery.data?.category_name} variant="outlined" />
+								<Chip onDelete={handleUntagTask} label={selectedCategory?.category_name} variant="outlined" />
 							</Grid>
 							) : (
 							<Grid item>
@@ -190,7 +196,7 @@ export default function Task({ id }:{ id:number }) {
 											getOptionLabel={(option: CategoryType) => option.category_name}
 
 											value={selectedCategory}
-											onChange={(event: any, newValue:(CategoryType | null)) => {
+											onChange={(event: any, newValue:(CategoryType | null)) => {												
 												setSelectedCategory(newValue)
 											}}
 
@@ -200,8 +206,8 @@ export default function Task({ id }:{ id:number }) {
 											}}
 										/>
 
-										<Button>Confirm</Button>
-										<Button>Cancel</Button>
+										<Button onClick={handleConfirmTagTask}>Confirm</Button>
+										<Button onClick={handleDiscardTagTask}>Cancel</Button>
 									</Box>
 								</Grid>
 							</Popover>)

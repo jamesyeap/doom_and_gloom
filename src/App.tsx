@@ -1,4 +1,4 @@
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter, Routes, Route } from "react-router-dom"
@@ -15,7 +15,7 @@ import { RequireAuth } from './pages/Auth';
 // #F48882 - red
 // #FAD2CC - pink
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     fontFamily: [
       'Roboto, sans-serif',
@@ -54,7 +54,7 @@ const theme = createMuiTheme({
       fontFamily: 'Roboto, sans-serif',
       color: '#F48882'
     }
-  }
+  } 
 })
 
 // export const url = "http://localhost:8080";

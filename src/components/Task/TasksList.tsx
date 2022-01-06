@@ -1,5 +1,7 @@
 import { Grid, Box, Typography, Button, CircularProgress } from '@material-ui/core';
 import { Add, FilterList } from '@material-ui/icons';
+import Lottie from 'react-lottie';
+import { useQuery, useQueryClient } from 'react-query';
 import { MouseEvent, useState, createContext, useEffect } from 'react';
 
 import Task from "./Task";
@@ -8,13 +10,20 @@ import NewCategory from './NewCategory';
 import FilterOptions from './FilterOptions';
 import { fetchCategories_API, fetchTasks_API } from './TaskAPI';
 import { User, TaskType, CategoryType } from "../../typings";
-import { useQuery, useQueryClient } from 'react-query';
+import empty from "../../lotties/empty.json"
+
+const emptyOptions = {
+	loop: true,
+	autoplay: true,
+	animationData: empty,
+	rendererSettings: {
+	  // preserveAspectRatio: "xMidYMid slice"
+	}
+};
 
 export let TasksListContext = createContext<any>(null);
 
 export default function TasksList() {
-	let data:TaskType[] = generateFakeData();
-
 	const [newTaskAnchor, setNewTaskAnchor] = useState<HTMLButtonElement | null>(null);	
 	const showNewTaskForm = Boolean(newTaskAnchor);
 	const newTaskFormId = showNewTaskForm ? 'add-new-task-form' : undefined;
@@ -64,9 +73,12 @@ export default function TasksList() {
 				//		have to refetch the entire-task list when we edit a task
 				data.forEach((task:TaskType) => queryClient.setQueryData(['task', task.id], task));
 			},
-			staleTime: Infinity // task list is never refreshed unless tasks are added/edited/deleted
+			staleTime: 500, // task list is not refreshed (unless tasks are added/edited/deleted) until 
+							// 		0.5 seconds passes; after which it will refresh when user clicks away 
+							//		from the window and clicks back again.
 		}
 	);
+
 	const categoriesQuery = useQuery(
 		'categories', () => fetchCategories_API(queryClient.getQueryData('user')), 
 		{
@@ -98,12 +110,12 @@ export default function TasksList() {
 						<Grid item>
 							<Grid container spacing={1}>
 								<Grid item>
-									<Button variant="contained" startIcon={<Add />} onClick={handleStartNewTask}>Add Task</Button>
+									<Button variant="contained" startIcon={<Add />} onClick={handleStartNewTask} color="secondary">Add Task</Button>
 								</Grid>
 								<NewTask id={newTaskFormId} open={showNewTaskForm} anchorEl={newTaskAnchor} onClose={handleDiscardNewTask} />
 
 								<Grid item>
-									<Button variant="contained" startIcon={<Add />} onClick={handleStartNewCategory}>Add Category</Button>
+									<Button variant="contained" startIcon={<Add />} onClick={handleStartNewCategory}>New Category</Button>
 								</Grid>
 								<NewCategory id={newCategoryFormId} open={showNewCategoryForm} anchorEl={newCategoryAnchor} onClose={handleDiscardNewCategory} />
 
@@ -127,7 +139,12 @@ export default function TasksList() {
 									<Task id={t.id} />
 								</Grid>
 							)))
-							: (<Grid item><Typography variant='h4'>Looks like there's nothing here.</Typography></Grid>)
+							: (<Grid item>
+								<Box sx={{ borderRadius: 20, padding: 20, bgcolor: '#F6FFEE' }}>
+									<Lottie options={emptyOptions} height={250} width={250} />
+									<Typography variant="h4">It seems like there's nothing here.</Typography>
+								</Box>
+							</Grid>)
 						}
 					</Grid>
 				</Grid>
